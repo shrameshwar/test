@@ -33,4 +33,31 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: shrame1999/githubaction:v1
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+  cd:
+    needs: integration
+    runs-on: ubuntu-latest
+    steps: 
+    - 
+      name: Checkout repo
+      uses: actions/checkout@v3
+      with: 
+        repository:  shrameshwar/kubernetes
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'main'
+    -  
+     name: Updating Deployment Image
+     run:
+       export IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+       echo $IMAGE_NAME
+       sed -i "s|mdhack/newhttpd.*$|$IMAGE_NAME|" deployment.yaml
+    -
+        name: Push To Repository
+        run: |
+          git config --global user.email "shrameshwar1999@gmail.com"
+          git config --global user.name "Runner"
+          git add .
+          git commit -m "${IMAGE_NAME} Tag"
+          git push
+
+       
