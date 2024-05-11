@@ -50,7 +50,7 @@ jobs:
      run:
        export IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
        echo $IMAGE_NAME
-       sed -i "s|mdhack/newhttpd.*$|$IMAGE_NAME|" deployment.yaml
+       sed -i "s|mdhack/newhttpd.*$|$IMAGE_NAME|" deployment.yml
     -
         name: Push To Repository
         run: |
